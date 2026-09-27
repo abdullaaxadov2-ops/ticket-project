@@ -29,5 +29,5 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::patch("/me/password", [ProfileController::class, "changePassword"]);
     Route::patch("/me/name", [ProfileController::class, "changeProfileName"]);
     Route::patch("/admin/users/{user}/role", [UserController::class, "changeRole"]);
-
+    Route::patch("/admin/users/{user}/block", [UserController::class, "changeBlockStatus"]);
 });
