@@ -5,8 +5,11 @@ use App\Http\Controllers\HealthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\CategoryController;
 
 Route::get("/health", HealthController::class);
+
+Route::get("/categories", [CategoryController::class, "index"]);
 
 Route::prefix("/auth")
     ->as("auth.")
@@ -30,4 +33,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::patch("/me/name", [ProfileController::class, "changeProfileName"]);
     Route::patch("/admin/users/{user}/role", [UserController::class, "changeRole"]);
     Route::patch("/admin/users/{user}/block", [UserController::class, "changeBlockStatus"]);
+    Route::post("/categories", [CategoryController::class, "store"]);
+    Route::patch("/categories/{category}", [CategoryController::class, "update"]);
+    Route::delete("/categories/{category}", [CategoryController::class, "destroy"]);
 });
