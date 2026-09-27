@@ -28,7 +28,7 @@ class LogoutTest extends TestCase
         $this->assertDatabaseCount('personal_access_tokens', 0);
 
         $this->app['auth']->forgetGuards();
-        $this->withToken($token)->getJson('/api/user')->assertUnauthorized();
+        $this->withToken($token)->getJson('/api/me')->assertUnauthorized();
     }
 
     public function testLogoutAfterCookieLogin(): void

@@ -31,6 +31,10 @@ class AuthService
         $user = User::where('email', $data->email)->firstOrFail();
         $user->checkPassword($data->password);
 
+        if ($user->is_blocked) {
+            throw new \Exception('User is blocked');
+        }
+
         if ($useCookies) {
             Auth::guard('web')->login($user);
 
