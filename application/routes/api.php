@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\CategoryController;
 Route::get("/health", HealthController::class);
 
 Route::get("/categories", [CategoryController::class, "index"]);
+Route::get("/venues", [VenueController::class, "index"]);
 
 Route::prefix("/auth")
     ->as("auth.")
@@ -36,4 +38,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/categories", [CategoryController::class, "store"]);
     Route::patch("/categories/{category}", [CategoryController::class, "update"]);
     Route::delete("/categories/{category}", [CategoryController::class, "destroy"]);
+    Route::post("/venues", [VenueController::class, "store"]);
+    Route::patch("/venues/{venue}", [VenueController::class, "update"]);
+    Route::delete("/venues/{venue}", [VenueController::class, "destroy"]);
 });
