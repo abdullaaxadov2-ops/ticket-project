@@ -27,14 +27,14 @@ class VenueTest extends TestCase
         $admin = User::factory()->create(['role' => UserRole::Admin]);
 
         $response = $this->actingAs($admin, 'sanctum')->postJson('/api/venues', [
-            'name' => 'Конференц-зал "А"',
-            'address' => 'г. Ташкент, ул. Амира Темура, 1',
+            'name' => 'Название места проведения мероприятия',
+            'address' => 'г. Ташкент, ул. Укчи, 3',
             'description' => 'Главный зал',
             'capacity' => 300,
         ]);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas('venues', ['name' => 'Конференц-зал "А"']);
+        $this->assertDatabaseHas('venues', ['name' => 'Название места проведения мероприятия']);
     }
 
     public function testCreatingVenueWithoutRequiredFieldsFails(): void

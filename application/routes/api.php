@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\EventController;
 
 Route::get("/health", HealthController::class);
 
 Route::get("/categories", [CategoryController::class, "index"]);
 Route::get("/venues", [VenueController::class, "index"]);
+Route::get("/events", [App\Http\Controllers\EventController::class, "index"]);
+Route::get("/events/{event}", [App\Http\Controllers\EventController::class, "show"]);
 
 Route::prefix("/auth")
     ->as("auth.")
@@ -41,4 +44,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/venues", [VenueController::class, "store"]);
     Route::patch("/venues/{venue}", [VenueController::class, "update"]);
     Route::delete("/venues/{venue}", [VenueController::class, "destroy"]);
+    Route::post("/events", [EventController::class, "store"]);
+    Route::patch("/events/{event}", [EventController::class, "update"]);
+    Route::delete("/events/{event}", [EventController::class, "destroy"]);
 });
