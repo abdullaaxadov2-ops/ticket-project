@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['title', 'description', 'starts_at', 'ends_at', 'category_id', 'venue_id'])]
 class Event extends Model
@@ -20,6 +21,11 @@ class Event extends Model
             'ends_at' => 'datetime',
             'status' => EventStatus::class,
         ];
+    }
+
+    public function ticketTypes(): HasMany
+    {
+        return $this->hasMany(TicketType::class);
     }
 
     public function organizer(): BelongsTo

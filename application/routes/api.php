@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\TicketTypeController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -15,6 +16,7 @@ Route::get("/categories", [CategoryController::class, "index"]);
 Route::get("/venues", [VenueController::class, "index"]);
 Route::get("/events", [App\Http\Controllers\EventController::class, "index"]);
 Route::get("/events/{event}", [App\Http\Controllers\EventController::class, "show"]);
+Route::get("/events/{event}/ticket-types", [App\Http\Controllers\TicketTypeController::class, "index"]);
 
 Route::prefix("/auth")
     ->as("auth.")
@@ -49,4 +51,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::delete("/events/{event}", [EventController::class, "destroy"]);
     Route::post("/events/{event}/publish", [EventController::class, "publish"]);
     Route::post("/events/{event}/cancel", [EventController::class, "cancel"]);
+    Route::post("/events/{event}/ticket-types", [TicketTypeController::class, "store"]);
+    Route::patch("/events/{event}/ticket-types/{ticketType}", [TicketTypeController::class, "update"]);
+    Route::delete("/events/{event}/ticket-types/{ticketType}", [TicketTypeController::class, "destroy"]);
 });
