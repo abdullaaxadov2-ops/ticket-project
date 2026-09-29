@@ -60,4 +60,32 @@ class EventController extends Controller
 
         return response()->noContent();
     }
+
+    public function publish(Event $event)
+    {
+        $this->authorize('publish', $event);
+
+        if ($event->status !== EventStatus::Draft) {
+            abort(422, 'Опубликовать можно только черновик.');
+        }
+
+        $event->status = EventStatus::Published;
+        $event->save();
+
+        return $event;
+    }
+
+    public function cancel(Event $event)
+    {
+        $this->authorize('cancel', $event);
+
+        if (!in_array($event->status, [EventStatus::Draft, EventStatus::Published], true)) {
+            abort(422, 'Это мероприятие уже отменено или завершено.');
+        }
+
+        $event->status = EventStatus::Cancelled;
+        $event->save();
+
+        return $event;
+    }
 }

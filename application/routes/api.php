@@ -47,4 +47,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/events", [EventController::class, "store"]);
     Route::patch("/events/{event}", [EventController::class, "update"]);
     Route::delete("/events/{event}", [EventController::class, "destroy"]);
+    Route::post("/events/{event}/publish", [EventController::class, "publish"]);
+    Route::post("/events/{event}/cancel", [EventController::class, "cancel"]);
 });

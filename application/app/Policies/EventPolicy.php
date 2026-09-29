@@ -21,4 +21,14 @@ class EventPolicy
     {
         return $user->isAdmin();
     }
+
+    public function publish(User $user, Event $event): bool
+    {
+        return $user->isAdmin() || $event->organizer_id === $user->id;
+    }
+
+    public function cancel(User $user, Event $event): bool
+    {
+        return $user->isAdmin() || $event->organizer_id === $user->id;
+    }
 }
