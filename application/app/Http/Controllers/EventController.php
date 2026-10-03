@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Enums\EventStatus;
 use App\Http\Requests\EventRequest;
 use App\Models\Event;
-use Illuminate\Http\Request;
+use App\Http\Requests\EventIndexRequest;
+use App\Models\TicketType;
 
 class EventController extends Controller
 {
-    public function index(Request $request)
+    public function index(EventIndexRequest $request)
     {
         $user = $request->user('sanctum');
         $query = Event::query();
@@ -23,7 +24,39 @@ class EventController extends Controller
             });
         }
 
-        return $query->paginate(15);
+        if ($request->filled('search')) {
+            $query->whereLike('title', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('venue_id')) {
+            $query->where('venue_id', $request->venue_id);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('starts_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('starts_at', '<=', $request->date_to);
+        }
+
+        $query->addSelect([
+            'min_price' => TicketType::selectRaw('MIN(price)')
+                ->whereColumn('event_id', 'events.id'),
+        ]);
+
+        match ($request->input('sort', 'date')) {
+            'date' => $query->orderBy('starts_at'),
+            '-date' => $query->orderByDesc('starts_at'),
+            'price' => $query->orderBy('min_price'),
+            '-price' => $query->orderByDesc('min_price'),
+        };
+
+        return $query->paginate($request->input('per_page', 15));
     }
 
     public function show(Event $event)
