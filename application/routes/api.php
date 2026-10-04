@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HealthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TicketTypeController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
@@ -54,4 +55,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/events/{event}/ticket-types", [TicketTypeController::class, "store"]);
     Route::patch("/events/{event}/ticket-types/{ticketType}", [TicketTypeController::class, "update"]);
     Route::delete("/events/{event}/ticket-types/{ticketType}", [TicketTypeController::class, "destroy"]);
+    Route::post("/events/{event}/orders", [OrderController::class, "store"]);
+    Route::get("/orders", [OrderController::class, "index"]);
+    Route::get("/orders/{order}", [OrderController::class, "show"]);
 });

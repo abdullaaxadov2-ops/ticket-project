@@ -2,21 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'description', 'price', 'quantity'])]
-class TicketType extends Model
+class Order extends Model
 {
     use HasFactory;
 
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2',
+            'total_amount' => 'decimal:2',
+            'status' => OrderStatus::class,
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function event(): BelongsTo
@@ -24,8 +30,8 @@ class TicketType extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function availableCount(): int
+    public function items(): HasMany
     {
-        return $this->quantity - $this->sold_count;
+        return $this->hasMany(OrderItem::class);
     }
 }
