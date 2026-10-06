@@ -10,12 +10,15 @@ use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Category\CategoryCreationController;
+use App\Http\Controllers\Category\CategoryDeletionController;
+use App\Http\Controllers\Category\CategoryListController;
+use App\Http\Controllers\Category\CategoryUpdateController;
 use App\Http\Controllers\EventController;
 
 Route::get("/health", HealthController::class);
 
-Route::get("/categories", [CategoryController::class, "index"]);
+Route::get("/categories", CategoryListController::class);
 Route::get("/venues", [VenueController::class, "index"]);
 Route::get("/events", [App\Http\Controllers\EventController::class, "index"]);
 Route::get("/events/{event}", [App\Http\Controllers\EventController::class, "show"]);
@@ -43,9 +46,12 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::patch("/me/name", [ProfileController::class, "changeProfileName"]);
     Route::patch("/admin/users/{user}/role", [UserController::class, "changeRole"]);
     Route::patch("/admin/users/{user}/block", [UserController::class, "changeBlockStatus"]);
-    Route::post("/categories", [CategoryController::class, "store"]);
-    Route::patch("/categories/{category}", [CategoryController::class, "update"]);
-    Route::delete("/categories/{category}", [CategoryController::class, "destroy"]);
+    Route::post("/categories", CategoryCreationController::class)
+        ->middleware('can:create,App\Models\Category');
+    Route::put("/categories/{category}", CategoryUpdateController::class)
+        ->middleware('can:update,category');
+    Route::delete("/categories/{category}", CategoryDeletionController::class)
+        ->middleware('can:delete,category');;
     Route::post("/venues", [VenueController::class, "store"]);
     Route::patch("/venues/{venue}", [VenueController::class, "update"]);
     Route::delete("/venues/{venue}", [VenueController::class, "destroy"]);
