@@ -30,7 +30,6 @@ use App\Http\Controllers\Venue\VenueCreationController;
 use App\Http\Controllers\Venue\VenueDeletionController;
 use App\Http\Controllers\Venue\VenueListController;
 use App\Http\Controllers\Venue\VenueUpdateController;
-use Illuminate\Support\Facades\Route;
 
 
 Route::get("/health", HealthController::class);
@@ -40,6 +39,7 @@ Route::get("/venues", VenueListController::class);
 Route::get("/events", EventListController::class);
 Route::get("/events/{event}", EventShowController::class);
 Route::get("/events/{event}/ticket-types", TicketTypeListController::class);
+
 Route::prefix("/auth")
     ->as("auth.")
     ->group(function () {
@@ -101,7 +101,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::delete("/events/{event}/ticket-types/{ticketType}", TicketTypeDeletionController::class)
         ->middleware('can:delete,ticketType')
         ->scopeBindings();
-    Route::post("/events/{event}/orders", OrderCreationController::class);
 
     Route::post("/events/{event}/orders", OrderCreationController::class)
         ->middleware('can:create,App\Models\Order');
