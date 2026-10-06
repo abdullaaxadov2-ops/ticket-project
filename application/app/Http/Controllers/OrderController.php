@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateOrderRequest;
 use App\Models\Event;
 use App\Models\Order;
-use App\Services\OrderService;
+use App\Services\OrderCreationService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -31,7 +31,7 @@ class OrderController extends Controller
         return $order->load('items');
     }
 
-    public function store(CreateOrderRequest $request, Event $event, OrderService $orderService)
+    public function store(CreateOrderRequest $request, Event $event, OrderCreationService $orderService)
     {
         $this->authorize('create', Order::class);
 

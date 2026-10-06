@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Data\Orders\CreateOrderData;
+use App\Data\Orders\OrderItemData;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateOrderRequest extends FormRequest
@@ -19,5 +20,15 @@ class CreateOrderRequest extends FormRequest
             'items.*.ticket_type_id' => ['required', 'integer', 'distinct', 'exists:ticket_types,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:10'],
         ];
+    }
+
+    public function toDTO(): CreateOrderData
+    {
+        return new CreateOrderData(
+            items: array_map(
+                fn (array $item) => new OrderItemData(...$item),
+                $this->validated('items'),
+            ),
+        );
     }
 }
