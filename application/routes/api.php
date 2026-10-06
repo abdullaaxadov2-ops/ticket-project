@@ -14,8 +14,12 @@ use App\Http\Controllers\Venue\VenueDeletionController;
 use App\Http\Controllers\Venue\VenueListController;
 use App\Http\Controllers\Venue\VenueUpdateController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Profile\NameChangeController;
+use App\Http\Controllers\Profile\PasswordChangeController;
+use App\Http\Controllers\Profile\ProfileShowController;
+use App\Http\Controllers\Admin\UserBlockController;
+use App\Http\Controllers\Admin\UserListController;
+use App\Http\Controllers\Admin\UserRoleChangeController;
 use App\Http\Controllers\Category\CategoryCreationController;
 use App\Http\Controllers\Category\CategoryDeletionController;
 use App\Http\Controllers\Category\CategoryListController;
@@ -46,12 +50,16 @@ Route::prefix("/auth")
     });
 
 Route::middleware("auth:sanctum")->group(function () {
-    Route::get("/me", [ProfileController::class, "me"]);
-    Route::patch("/me/password", [ProfileController::class, "changePassword"]);
-    Route::patch("/me/name", [ProfileController::class, "changeProfileName"]);
+    Route::get("/me", ProfileShowController::class);
+    Route::patch("/me/password", PasswordChangeController::class);
+    Route::patch("/me/name", NameChangeController::class);
 
-    Route::patch("/admin/users/{user}/role", [UserController::class, "changeRole"]);
-    Route::patch("/admin/users/{user}/block", [UserController::class, "changeBlockStatus"]);
+    Route::get("/admin/users", UserListController::class)
+        ->middleware('can:viewAny,App\Models\User');
+    Route::patch("/admin/users/{user}/role", UserRoleChangeController::class)
+        ->middleware('can:manage,user');
+    Route::patch("/admin/users/{user}/block", UserBlockController::class)
+        ->middleware('can:manage,user');
 
     Route::post("/categories", CategoryCreationController::class)
         ->middleware('can:create,App\Models\Category');

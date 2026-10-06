@@ -21,6 +21,7 @@ class ChangeUserRoleTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        $response->assertJsonPath('success', true);
         $this->assertSame(UserRole::Organiser, $targetUser->fresh()->role);
     }
 
@@ -45,5 +46,19 @@ class ChangeUserRoleTest extends TestCase
         ]);
 
         $response->assertStatus(403);
+    }
+
+    public function testChangingRoleValidatesRole(): void
+    {
+        $admin = User::factory()->create(['role' => UserRole::Admin]);
+        $targetUser = User::factory()->create(['role' => UserRole::Participant]);
+
+        $response = $this->actingAs($admin, 'sanctum')->patchJson("/api/admin/users/{$targetUser->id}/role", [
+            'role' => 'superadmin',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['role']);
+        $this->assertSame(UserRole::Participant, $targetUser->fresh()->role);
     }
 }

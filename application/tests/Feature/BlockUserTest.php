@@ -21,6 +21,7 @@ class BlockUserTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        $response->assertJsonPath('success', true);
         $this->assertTrue($targetUser->fresh()->is_blocked);
     }
 
@@ -34,6 +35,7 @@ class BlockUserTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        $response->assertJsonPath('success', true);
         $this->assertFalse($targetUser->fresh()->is_blocked);
     }
 
