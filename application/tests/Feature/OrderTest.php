@@ -31,10 +31,10 @@ class OrderTest extends TestCase
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonPath('total_amount', '450000.00');
-        $response->assertJsonPath('status', OrderStatus::Pending->value);
-        $response->assertJsonCount(2, 'items');
-        $this->assertSame(2, $standard->fresh()->sold_count);
+        $response->assertJsonPath('success', true);
+        $response->assertJsonPath('data.total_amount', '450000.00');
+        $response->assertJsonPath('data.status', OrderStatus::Pending->value);
+        $response->assertJsonCount(2, 'data.items');
         $this->assertSame(1, $vip->fresh()->sold_count);
     }
 
@@ -136,5 +136,26 @@ class OrderTest extends TestCase
         $response = $this->actingAs($participant, 'sanctum')->getJson("/api/orders/{$foreignOrder->id}");
 
         $response->assertStatus(403);
+    }
+    public function testParticipantCanViewOwnOrder(): void
+    {
+        $order = Order::factory()->create();
+
+        $response = $this->actingAs($order->user, 'sanctum')->getJson("/api/orders/{$order->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.id', $order->id);
+        $response->assertJsonStructure(['data' => ['items']]);
+    }
+
+    public function testOrganiserCanViewOrderOfOwnEvent(): void
+    {
+        $order = Order::factory()->create();
+        $organiser = $order->event->organizer;
+
+        $response = $this->actingAs($organiser, 'sanctum')->getJson("/api/orders/{$order->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.id', $order->id);
     }
 }

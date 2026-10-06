@@ -22,6 +22,7 @@ class ChangePasswordTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+        $response->assertJsonPath('success', true);
         $this->assertTrue(Hash::check('new_password123', $user->refresh()->password));
     }
 

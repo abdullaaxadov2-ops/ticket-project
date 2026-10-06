@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Event;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Data\Events\EventFilterData;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EventIndexRequest extends FormRequest
+class EventListRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -23,5 +23,10 @@ class EventIndexRequest extends FormRequest
             'sort' => ['nullable', 'in:date,-date,price,-price'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
+    }
+
+    public function toDTO(): EventFilterData
+    {
+        return new EventFilterData(...$this->validated());
     }
 }

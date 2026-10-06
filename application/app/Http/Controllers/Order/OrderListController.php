@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Order;
 
+use App\Http\Controllers\Controller;
 use App\Services\OrderListService;
 use Illuminate\Http\Request;
 
