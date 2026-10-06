@@ -5,7 +5,10 @@ use App\Http\Controllers\HealthController;
 use App\Http\Controllers\OrderCreationController;
 use App\Http\Controllers\OrderListController;
 use App\Http\Controllers\OrderShowController;
-use App\Http\Controllers\TicketTypeController;
+use App\Http\Controllers\TicketType\TicketTypeCreationController;
+use App\Http\Controllers\TicketType\TicketTypeDeletionController;
+use App\Http\Controllers\TicketType\TicketTypeListController;
+use App\Http\Controllers\TicketType\TicketTypeUpdateController;
 use App\Http\Controllers\Venue\VenueCreationController;
 use App\Http\Controllers\Venue\VenueDeletionController;
 use App\Http\Controllers\Venue\VenueListController;
@@ -25,8 +28,7 @@ Route::get("/categories", CategoryListController::class);
 Route::get("/venues", VenueListController::class);
 Route::get("/events", [App\Http\Controllers\EventController::class, "index"]);
 Route::get("/events/{event}", [App\Http\Controllers\EventController::class, "show"]);
-Route::get("/events/{event}/ticket-types", [App\Http\Controllers\TicketTypeController::class, "index"]);
-
+Route::get("/events/{event}/ticket-types", TicketTypeListController::class);
 Route::prefix("/auth")
     ->as("auth.")
     ->group(function () {
@@ -70,9 +72,14 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::delete("/events/{event}", [EventController::class, "destroy"]);
     Route::post("/events/{event}/publish", [EventController::class, "publish"]);
     Route::post("/events/{event}/cancel", [EventController::class, "cancel"]);
-    Route::post("/events/{event}/ticket-types", [TicketTypeController::class, "store"]);
-    Route::patch("/events/{event}/ticket-types/{ticketType}", [TicketTypeController::class, "update"]);
-    Route::delete("/events/{event}/ticket-types/{ticketType}", [TicketTypeController::class, "destroy"]);
+    Route::post("/events/{event}/ticket-types", TicketTypeCreationController::class)
+        ->middleware('can:create,App\Models\TicketType,event');
+    Route::put("/events/{event}/ticket-types/{ticketType}", TicketTypeUpdateController::class)
+        ->middleware('can:update,ticketType')
+        ->scopeBindings();
+    Route::delete("/events/{event}/ticket-types/{ticketType}", TicketTypeDeletionController::class)
+        ->middleware('can:delete,ticketType')
+        ->scopeBindings();
     Route::post("/events/{event}/orders", OrderCreationController::class);
 
     Route::get("/orders", OrderListController::class);
