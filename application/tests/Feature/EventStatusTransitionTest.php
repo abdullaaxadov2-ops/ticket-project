@@ -21,6 +21,8 @@ class EventStatusTransitionTest extends TestCase
         $response = $this->actingAs($organiser, 'sanctum')->postJson("/api/events/{$event->id}/publish");
 
         $response->assertStatus(200);
+        $response->assertJsonPath('success', true);
+        $response->assertJsonPath('data.status', EventStatus::Published->value);
         $this->assertSame(EventStatus::Published, $event->fresh()->status);
         // assertSame это метод для сравнения $this->assertSame($expected, $actual)
     }
@@ -34,6 +36,7 @@ class EventStatusTransitionTest extends TestCase
         $response = $this->actingAs($otherOrganiser, 'sanctum')->postJson("/api/events/{$event->id}/publish");
 
         $response->assertStatus(403);
+        $this->assertSame(EventStatus::Draft, $event->fresh()->status);
     }
 
     public function testCannotPublishAlreadyPublishedEvent(): void
@@ -44,6 +47,7 @@ class EventStatusTransitionTest extends TestCase
         $response = $this->actingAs($organiser, 'sanctum')->postJson("/api/events/{$event->id}/publish");
 
         $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['status']);
     }
 
     public function testOrganiserCanCancelOwnEvent(): void
@@ -54,6 +58,7 @@ class EventStatusTransitionTest extends TestCase
         $response = $this->actingAs($organiser, 'sanctum')->postJson("/api/events/{$event->id}/cancel");
 
         $response->assertStatus(200);
+        $response->assertJsonPath('success', true);
         $this->assertSame(EventStatus::Cancelled, $event->fresh()->status);
     }
 
@@ -65,6 +70,7 @@ class EventStatusTransitionTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')->postJson("/api/events/{$event->id}/cancel");
 
         $response->assertStatus(200);
+        $this->assertSame(EventStatus::Cancelled, $event->fresh()->status);
     }
 
     public function testCannotCancelAlreadyCancelledEvent(): void
@@ -75,5 +81,17 @@ class EventStatusTransitionTest extends TestCase
         $response = $this->actingAs($organiser, 'sanctum')->postJson("/api/events/{$event->id}/cancel");
 
         $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['status']);
+    }
+
+    public function testParticipantCannotCancelEvent(): void
+    {
+        $participant = User::factory()->create(['role' => UserRole::Participant]);
+        $event = Event::factory()->create(['status' => EventStatus::Published]);
+
+        $response = $this->actingAs($participant, 'sanctum')->postJson("/api/events/{$event->id}/cancel");
+
+        $response->assertStatus(403);
+        $this->assertSame(EventStatus::Published, $event->fresh()->status);
     }
 }

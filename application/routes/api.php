@@ -1,10 +1,27 @@
 <?php
 
+use App\Http\Controllers\Admin\UserBlockController;
+use App\Http\Controllers\Admin\UserListController;
+use App\Http\Controllers\Admin\UserRoleChangeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Category\CategoryCreationController;
+use App\Http\Controllers\Category\CategoryDeletionController;
+use App\Http\Controllers\Category\CategoryListController;
+use App\Http\Controllers\Category\CategoryUpdateController;
+use App\Http\Controllers\Event\EventCancellationController;
+use App\Http\Controllers\Event\EventCreationController;
+use App\Http\Controllers\Event\EventDeletionController;
+use App\Http\Controllers\Event\EventListController;
+use App\Http\Controllers\Event\EventPublicationController;
+use App\Http\Controllers\Event\EventShowController;
+use App\Http\Controllers\Event\EventUpdateController;
 use App\Http\Controllers\HealthController;
-use App\Http\Controllers\OrderCreationController;
-use App\Http\Controllers\OrderListController;
-use App\Http\Controllers\OrderShowController;
+use App\Http\Controllers\Order\OrderCreationController;
+use App\Http\Controllers\Order\OrderListController;
+use App\Http\Controllers\Order\OrderShowController;
+use App\Http\Controllers\Profile\NameChangeController;
+use App\Http\Controllers\Profile\PasswordChangeController;
+use App\Http\Controllers\Profile\ProfileShowController;
 use App\Http\Controllers\TicketType\TicketTypeCreationController;
 use App\Http\Controllers\TicketType\TicketTypeDeletionController;
 use App\Http\Controllers\TicketType\TicketTypeListController;
@@ -14,24 +31,14 @@ use App\Http\Controllers\Venue\VenueDeletionController;
 use App\Http\Controllers\Venue\VenueListController;
 use App\Http\Controllers\Venue\VenueUpdateController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Profile\NameChangeController;
-use App\Http\Controllers\Profile\PasswordChangeController;
-use App\Http\Controllers\Profile\ProfileShowController;
-use App\Http\Controllers\Admin\UserBlockController;
-use App\Http\Controllers\Admin\UserListController;
-use App\Http\Controllers\Admin\UserRoleChangeController;
-use App\Http\Controllers\Category\CategoryCreationController;
-use App\Http\Controllers\Category\CategoryDeletionController;
-use App\Http\Controllers\Category\CategoryListController;
-use App\Http\Controllers\Category\CategoryUpdateController;
-use App\Http\Controllers\EventController;
+
 
 Route::get("/health", HealthController::class);
 
 Route::get("/categories", CategoryListController::class);
 Route::get("/venues", VenueListController::class);
-Route::get("/events", [App\Http\Controllers\EventController::class, "index"]);
-Route::get("/events/{event}", [App\Http\Controllers\EventController::class, "show"]);
+Route::get("/events", EventListController::class);
+Route::get("/events/{event}", EventShowController::class);
 Route::get("/events/{event}/ticket-types", TicketTypeListController::class);
 Route::prefix("/auth")
     ->as("auth.")
@@ -75,11 +82,17 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::delete("/venues/{venue}", VenueDeletionController::class)
         ->middleware('can:delete,venue');
 
-    Route::post("/events", [EventController::class, "store"]);
-    Route::patch("/events/{event}", [EventController::class, "update"]);
-    Route::delete("/events/{event}", [EventController::class, "destroy"]);
-    Route::post("/events/{event}/publish", [EventController::class, "publish"]);
-    Route::post("/events/{event}/cancel", [EventController::class, "cancel"]);
+    Route::post("/events", EventCreationController::class)
+        ->middleware('can:create,App\Models\Event');
+    Route::put("/events/{event}", EventUpdateController::class)
+        ->middleware('can:update,event');
+    Route::delete("/events/{event}", EventDeletionController::class)
+        ->middleware('can:delete,event');
+    Route::post("/events/{event}/publish", EventPublicationController::class)
+        ->middleware('can:publish,event');
+    Route::post("/events/{event}/cancel", EventCancellationController::class)
+        ->middleware('can:cancel,event');
+
     Route::post("/events/{event}/ticket-types", TicketTypeCreationController::class)
         ->middleware('can:create,App\Models\TicketType,event');
     Route::put("/events/{event}/ticket-types/{ticketType}", TicketTypeUpdateController::class)
@@ -90,6 +103,9 @@ Route::middleware("auth:sanctum")->group(function () {
         ->scopeBindings();
     Route::post("/events/{event}/orders", OrderCreationController::class);
 
+    Route::post("/events/{event}/orders", OrderCreationController::class)
+        ->middleware('can:create,App\Models\Order');
     Route::get("/orders", OrderListController::class);
-    Route::get("/orders/{order}", OrderShowController::class);
+    Route::get("/orders/{order}", OrderShowController::class)
+        ->middleware('can:view,order');
 });
