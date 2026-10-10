@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\SignatureContract;
+use App\Services\SignatureService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +17,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
+        $this->app->singleton(SignatureContract::class, function ($app) {
+            return new SignatureService();
+        });
     }
 
     /**
@@ -31,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinutes(30, 3)
                 ->by($request->email ?: $request->ip())
                 ->after(function (Response $response) {
-                    return $response->status() === 422;
+                    return $response->getStatusCode() === 422;
                 });
         });
     }

@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'payment' => [
+        'url' => env('PAYMENT_URL'),
+        'cashbox_id' => (int) env('PAYMENT_CASHBOX_ID'),
+        'secret' => env('PAYMENT_SECRET'),
+    ],
+
 ];
