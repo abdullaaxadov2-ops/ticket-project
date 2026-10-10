@@ -19,6 +19,8 @@ use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Order\OrderCreationController;
 use App\Http\Controllers\Order\OrderListController;
 use App\Http\Controllers\Order\OrderShowController;
+use App\Http\Controllers\Payment\PaymentCreationController;
+use App\Http\Controllers\Payment\PaymentWebhookController;
 use App\Http\Controllers\Profile\NameChangeController;
 use App\Http\Controllers\Profile\PasswordChangeController;
 use App\Http\Controllers\Profile\ProfileShowController;
@@ -39,6 +41,7 @@ Route::get("/venues", VenueListController::class);
 Route::get("/events", EventListController::class);
 Route::get("/events/{event}", EventShowController::class);
 Route::get("/events/{event}/ticket-types", TicketTypeListController::class);
+Route::post("/payments/webhook", PaymentWebhookController::class);
 
 Route::prefix("/auth")
     ->as("auth.")
@@ -107,4 +110,6 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("/orders", OrderListController::class);
     Route::get("/orders/{order}", OrderShowController::class)
         ->middleware('can:view,order');
+    Route::post("/orders/{order}/pay", PaymentCreationController::class)
+        ->middleware('can:pay,order');
 });

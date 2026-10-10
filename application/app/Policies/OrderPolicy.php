@@ -18,4 +18,9 @@ class OrderPolicy
             || $order->user_id === $user->id
             || $order->event->organizer_id === $user->id;
     }
+
+    public function pay(User $user, Order $order): bool
+    {
+        return $order->user_id === $user->id;
+    }
 }
