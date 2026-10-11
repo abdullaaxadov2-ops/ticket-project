@@ -40,7 +40,8 @@ sequenceDiagram
     P-->>U: редирект на success_url или fail_url кассы (страница фронта)
     P->>B: (из очереди) POST /api/payments/webhook {order_id, amount, status} + X-Signature
     B->>B: проверка подписи, поиск заказа по payment_reference, идемпотентность
-    B->>B: status=1 → paid (🛠 дальше: OrderPaid → билеты + письмо); status=2 → cancelled, резерв снят
+    B->>B: status=1 → paid (🛠 дальше OrderPaid → билеты и письмо)
+    B->>B: status=2 → cancelled, резерв снят
     B-->>P: 200
     F->>B: GET /api/orders/123 (опрос статуса). Фронт сам об успехе НЕ решает
 ```

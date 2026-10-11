@@ -151,13 +151,63 @@ erDiagram
     orders ||--o{ order_items : "cascade"
     ticket_types ||--o{ order_items : ""
 
-    users { bigint id; string email; string password; string name; string role; bool is_blocked; timestamp email_verified_at }
-    categories { bigint id; string name "unique"; text description }
-    venues { bigint id; string name; string address; text description; int capacity }
-    events { bigint id; string title; text description; datetime starts_at; datetime ends_at; bigint organizer_id; bigint category_id; bigint venue_id; string status }
-    ticket_types { bigint id; bigint event_id; string name; text description; decimal price; int quantity; int sold_count }
-    orders { bigint id; bigint user_id; bigint event_id; decimal total_amount; string status; string payment_reference "unique"; string payment_url }
-    order_items { bigint id; bigint order_id; bigint ticket_type_id; int quantity; decimal price }
+    users {
+        bigint id
+        string email
+        string password
+        string name
+        string role
+        bool is_blocked
+        timestamp email_verified_at
+    }
+    categories {
+        bigint id
+        string name "unique"
+        text description
+    }
+    venues {
+        bigint id
+        string name
+        string address
+        text description
+        int capacity
+    }
+    events {
+        bigint id
+        string title
+        text description
+        datetime starts_at
+        datetime ends_at
+        bigint organizer_id
+        bigint category_id
+        bigint venue_id
+        string status
+    }
+    ticket_types {
+        bigint id
+        bigint event_id
+        string name
+        text description
+        decimal price
+        int quantity
+        int sold_count
+    }
+    orders {
+        bigint id
+        bigint user_id
+        bigint event_id
+        decimal total_amount
+        string status
+        string payment_reference "unique"
+        string payment_url
+    }
+    order_items {
+        bigint id
+        bigint order_id
+        bigint ticket_type_id
+        int quantity
+        decimal price
+    }
 ```
 
 Ключевые решения:
@@ -186,7 +236,7 @@ stateDiagram-v2
     draft --> published : POST /events/{id}/publish
     draft --> cancelled : POST /events/{id}/cancel
     published --> cancelled : POST /events/{id}/cancel
-    published --> finished : после окончания (план: Scheduler + EventStarted)
+    published --> finished : после окончания (план, Scheduler и EventStarted)
 ```
 
 - Опубликовать можно только `draft`, иначе 422.
