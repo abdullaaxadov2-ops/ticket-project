@@ -24,6 +24,8 @@ use App\Http\Controllers\Payment\PaymentWebhookController;
 use App\Http\Controllers\Profile\NameChangeController;
 use App\Http\Controllers\Profile\PasswordChangeController;
 use App\Http\Controllers\Profile\ProfileShowController;
+use App\Http\Controllers\Ticket\TicketListController;
+use App\Http\Controllers\Ticket\TicketShowController;
 use App\Http\Controllers\TicketType\TicketTypeCreationController;
 use App\Http\Controllers\TicketType\TicketTypeDeletionController;
 use App\Http\Controllers\TicketType\TicketTypeListController;
@@ -42,6 +44,7 @@ Route::get("/events", EventListController::class);
 Route::get("/events/{event}", EventShowController::class);
 Route::get("/events/{event}/ticket-types", TicketTypeListController::class);
 Route::post("/payments/webhook", PaymentWebhookController::class);
+
 
 Route::prefix("/auth")
     ->as("auth.")
@@ -112,4 +115,7 @@ Route::middleware("auth:sanctum")->group(function () {
         ->middleware('can:view,order');
     Route::post("/orders/{order}/pay", PaymentCreationController::class)
         ->middleware('can:pay,order');
+    Route::get("/tickets", TicketListController::class);
+    Route::get("/tickets/{ticket}", TicketShowController::class)
+        ->middleware('can:view,ticket');
 });
