@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\OrderStatus;
 use App\Enums\TicketStatus;
 use App\Models\Order;
 use App\Models\TicketType;
@@ -17,7 +18,7 @@ class TicketFactory extends Factory
     {
         return [
             'number' => 'EVT-' . Str::upper(Str::random(6)),
-            'order_id' => Order::factory(),
+            'order_id' => Order::factory()->state(['status' => OrderStatus::Paid]),
             'ticket_type_id' => fn (array $attributes) => TicketType::factory()->create([
                 'event_id' => Order::find($attributes['order_id'])->event_id,
             ])->id,

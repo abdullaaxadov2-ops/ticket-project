@@ -41,4 +41,14 @@ class EventPolicy
     {
         return $user->isAdmin() || $event->organizer_id === $user->id;
     }
+
+    public function checkIn(User $user, Event $event): bool
+    {
+        return $user->isAdmin() || $event->organizer_id === $user->id;
+    }
+
+    public function viewRegistrations(User $user, Event $event): bool
+    {
+        return $user->isAdmin() || $event->organizer_id === $user->id;
+    }
 }
