@@ -15,6 +15,7 @@ class PaymentWebhookService
 
     public function __construct(
         readonly private SignatureContract $signatureService,
+        readonly private TicketService $ticketService,
     )
     {
 
@@ -37,6 +38,7 @@ class PaymentWebhookService
 
             if ($data->status === self::STATUS_PAID) {
                 $order->status = OrderStatus::Paid;
+                $this->ticketService->issueForOrder($order);
             } else {
                 $order->status = OrderStatus::Cancelled;
 

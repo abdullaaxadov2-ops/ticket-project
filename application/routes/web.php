@@ -1,5 +1,3 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-Route::view('/{any?}', 'app')->where('any', '.*');
+// Проект — только REST API (routes/api.php). Веб-страниц нет.
