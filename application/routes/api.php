@@ -13,6 +13,7 @@ use App\Http\Controllers\Event\EventCreationController;
 use App\Http\Controllers\Event\EventDeletionController;
 use App\Http\Controllers\Event\EventListController;
 use App\Http\Controllers\Event\EventPublicationController;
+use App\Http\Controllers\Event\EventRegistrationListController;
 use App\Http\Controllers\Event\EventShowController;
 use App\Http\Controllers\Event\EventUpdateController;
 use App\Http\Controllers\HealthController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Payment\PaymentWebhookController;
 use App\Http\Controllers\Profile\NameChangeController;
 use App\Http\Controllers\Profile\PasswordChangeController;
 use App\Http\Controllers\Profile\ProfileShowController;
+use App\Http\Controllers\Ticket\TicketCheckInController;
 use App\Http\Controllers\Ticket\TicketListController;
 use App\Http\Controllers\Ticket\TicketShowController;
 use App\Http\Controllers\TicketType\TicketTypeCreationController;
@@ -118,4 +120,8 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::get("/tickets", TicketListController::class);
     Route::get("/tickets/{ticket}", TicketShowController::class)
         ->middleware('can:view,ticket');
+    Route::post("/events/{event}/tickets/{ticket}/check-in", TicketCheckInController::class)
+        ->middleware('can:checkIn,event');
+    Route::get("/events/{event}/registrations", EventRegistrationListController::class)
+        ->middleware('can:viewRegistrations,event');
 });
