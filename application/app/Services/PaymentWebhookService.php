@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\SignatureContract;
 use App\Data\Payments\PaymentWebhookData;
 use App\Enums\OrderStatus;
+use App\Events\OrderPaid;
 use App\Exceptions\InvalidSignatureException;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,6 @@ class PaymentWebhookService
 
     public function __construct(
         readonly private SignatureContract $signatureService,
-        readonly private TicketService $ticketService,
     )
     {
 
@@ -38,7 +38,6 @@ class PaymentWebhookService
 
             if ($data->status === self::STATUS_PAID) {
                 $order->status = OrderStatus::Paid;
-                $this->ticketService->issueForOrder($order);
             } else {
                 $order->status = OrderStatus::Cancelled;
 
@@ -48,6 +47,11 @@ class PaymentWebhookService
             }
 
             $order->save();
+
+            if ($order->status === OrderStatus::Paid) {
+                OrderPaid::dispatch($order);
+            }
+
         });
     }
 }
