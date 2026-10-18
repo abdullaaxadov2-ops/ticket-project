@@ -19,6 +19,7 @@ class Event extends Model
         return [
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'reminder_sent_at' => 'datetime',
             'status' => EventStatus::class,
         ];
     }
@@ -41,5 +42,9 @@ class Event extends Model
     public function venue(): BelongsTo
     {
         return $this->belongsTo(Venue::class);
+    }
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
     }
 }
