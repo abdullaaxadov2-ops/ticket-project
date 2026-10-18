@@ -30,6 +30,12 @@ class PaymentCreationService
             ]);
         }
 
+        if ($order->expires_at?->isPast()) {
+            throw ValidationException::withMessages([
+                'order' => 'Время на оплату заказа истекло.',
+            ]);
+        }
+
         if ($order->payment_url !== null) {
             return $order->payment_url;
         }

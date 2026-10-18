@@ -14,6 +14,8 @@ use Illuminate\Validation\ValidationException;
 
 class OrderCreationService
 {
+    private const RESERVATION_MINUTES = 15;
+
     public function create(User $user, Event $event, CreateOrderData $data): Order
     {
         if ($event->status !== EventStatus::Published) {
@@ -55,6 +57,7 @@ class OrderCreationService
             $order->event_id = $event->id;
             $order->total_amount = $total;
             $order->status = OrderStatus::Pending;
+            $order->expires_at = now()->addMinutes(self::RESERVATION_MINUTES);
             $order->save();
 
             foreach ($data->items as $item) {
