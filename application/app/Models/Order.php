@@ -17,7 +17,16 @@ class Order extends Model
         return [
             'total_amount' => 'decimal:2',
             'status' => OrderStatus::class,
+            'expires_at' => 'datetime',
         ];
+    }
+
+// Возвращение зарезервированные билеты в остаток
+    public function releaseTickets(): void
+    {
+        foreach ($this->items as $item) {
+            $item->ticketType()->decrement('sold_count', $item->quantity);
+        }
     }
 
     public function user(): BelongsTo

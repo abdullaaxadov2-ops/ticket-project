@@ -41,9 +41,7 @@ class PaymentWebhookService
             } else {
                 $order->status = OrderStatus::Cancelled;
 
-                foreach ($order->items as $item) {
-                    $item->ticketType()->decrement('sold_count', $item->quantity);
-                }
+                $order->releaseTickets();
             }
 
             $order->save();

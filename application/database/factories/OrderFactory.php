@@ -19,6 +19,7 @@ class OrderFactory extends Factory
             'event_id' => Event::factory(),
             'total_amount' => fake()->randomFloat(2, 50000, 500000),
             'status' => OrderStatus::Pending,
+            'expires_at' => now()->addMinutes(15)
         ];
     }
 }
