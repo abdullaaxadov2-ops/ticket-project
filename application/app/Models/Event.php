@@ -20,7 +20,8 @@ class Event extends Model
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
             'reminder_sent_at' => 'datetime',
-            'status' => EventStatus::class,
+            'started_at' => 'datetime',
+            'status' => EventStatus::class
         ];
     }
 
