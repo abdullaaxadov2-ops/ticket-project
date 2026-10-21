@@ -33,7 +33,12 @@ class PaymentWebhookService
                 ->firstOrFail();
 
             if ($order->status !== OrderStatus::Pending) {
-                return;
+                if ($data->status === self::STATUS_PAID && $order->status !== OrderStatus::Paid) {
+                    $order->refund_required = true;
+                    $order->save();
+                }
+
+                return; // Деньги пришли по уже отменённому или просроченному заказу: их нужно вернуть
             }
 
             if ($data->status === self::STATUS_PAID) {

@@ -18,6 +18,7 @@ class Order extends Model
             'total_amount' => 'decimal:2',
             'status' => OrderStatus::class,
             'expires_at' => 'datetime',
+            'refund_required' => 'boolean'
         ];
     }
 
