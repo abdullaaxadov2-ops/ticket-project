@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('events:send-reminders')->hourly();
         $schedule->command('orders:expire')->everyMinute();
+        $schedule->command('events:update-statuses')->everyMinute();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
