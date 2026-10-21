@@ -7,6 +7,7 @@ use App\Enums\EventStatus;
 use App\Enums\OrderStatus;
 use App\Enums\TicketStatus;
 use App\Events\EventCancelled;
+use App\Events\EventPublished;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +48,8 @@ class EventService
 
         $event->status = EventStatus::Published;
         $event->save();
+
+        EventPublished::dispatch($event);
 
         return $event;
     }
