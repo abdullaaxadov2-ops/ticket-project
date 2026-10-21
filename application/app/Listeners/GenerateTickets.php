@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\OrderPaid;
+use App\Events\TicketPurchased;
 use App\Services\TicketService;
 
 class GenerateTickets
@@ -14,5 +15,7 @@ class GenerateTickets
     public function handle(OrderPaid $event): void
     {
         $this->ticketService->issueForOrder($event->order);
+
+        TicketPurchased::dispatch($event->order);
     }
 }
