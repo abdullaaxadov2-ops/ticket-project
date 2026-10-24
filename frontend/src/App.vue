@@ -11,7 +11,7 @@ import AppHeader from '@/components/AppHeader.vue'
     </main>
 
     <footer class="border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-      Ticket Project · учебный проект на Laravel
+      Chipta · билеты на концерты, спектакли и другие мероприятия
     </footer>
   </div>
 </template>

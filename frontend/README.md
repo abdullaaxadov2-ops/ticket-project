@@ -1,4 +1,4 @@
-# Frontend: Ticket Project
+# Chipta: frontend
 
 SPA на Vue 3 для нашего Laravel API. В ТЗ фронт не входит (§1), он нужен для демонстрации.
 
