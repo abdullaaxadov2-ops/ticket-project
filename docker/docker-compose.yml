@@ -83,10 +83,27 @@ services:
       driver: 'none'
     networks:
       - proekt
+  frontend:
+    image: node:22-slim
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+      - frontend_node_modules:/app/node_modules
+    environment:
+      VITE_BACKEND_URL: http://nginx
+      VITE_USE_POLLING: "true"
+    depends_on:
+      - nginx
+    networks:
+      - proekt
 volumes:
   postgres_data:
   composer_home:
   redis_data:
+  frontend_node_modules:
 
 networks:
   proekt:
