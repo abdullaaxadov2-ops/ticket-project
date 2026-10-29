@@ -203,7 +203,7 @@ async function buy() {
           {{ buying ? 'Оформляем…' : auth.isGuest ? 'Войти и купить' : 'Купить и оплатить' }}
         </button>
 
-        <!-- Заглушка: рассрочки пока нет ни во фронте, ни в бэкенде -->
+        <!-- Заглушка: рассрочки пока нет ни во фронте, ни в бэкенде
         <button
             type="button"
             class="btn mt-3 w-full cursor-not-allowed bg-green-600 text-white disabled:opacity-80"
@@ -212,6 +212,7 @@ async function buy() {
           Рассрочка от Alif
           <span class="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white">скоро</span>
         </button>
+        -->
 
         <p class="mt-2 text-xs text-slate-500">Билеты резервируются на 15 минут до оплаты.</p>
       </template>
